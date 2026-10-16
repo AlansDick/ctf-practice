@@ -1,0 +1,40 @@
+import base64
+
+def decode_line(line):
+    """解码单行 Base64，最多解 5 层，直到解出可读内容"""
+    data = line.strip()
+    for i in range(5):
+        try:
+            decoded = base64.b64decode(data).decode('utf-8')
+            # 如果解出来是可读的（包含 flag、include、print 等），就返回
+            if any(k in decoded for k in ['flag', 'ctf', 'include', 'print', 'cout', 'int']):
+                return decoded
+            # 否则继续套娃
+            data = decoded
+        except Exception:
+            # 解码失败，返回上一次成功的结果
+            return data
+    return data
+
+def main():
+    with open("ComeOn!.txt", "r", encoding="utf-8") as f:
+        lines = f.readlines()
+
+    results = []
+    for line in lines:
+        line = line.strip()
+        if not line:
+            continue
+        decoded_line = decode_line(line)
+        results.append(decoded_line)
+        print(f"原始：{line[:30]}...")
+        print(f"解码：{decoded_line}")
+        print("-" * 40)
+
+    # 把所有解码结果写入文件
+    with open("decoded_final.txt", "w", encoding="utf-8") as out:
+        out.write("\n".join(results))
+    print("全部解码结果已保存到 decoded_final.txt")
+
+if __name__ == "__main__":
+    main()
