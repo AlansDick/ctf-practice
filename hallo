@@ -1,0 +1,4 @@
+name = input('What is you name? ')
+print('welcome to c world ' + name + '!')
+print('hallo world')
+print('hallo losedow')
